@@ -75,6 +75,7 @@ def get_secure_filename():
 class MySQL:
     def __init__(self, app=None):
         self.app = app
+        self._connection_available = None
         if app:
             self.init_app(app)
             
@@ -90,14 +91,28 @@ class MySQL:
     def connection(self):
         db = getattr(g, '_database', None)
         if db is None:
-            pymysql = get_pymysql()
-            db = g._database = pymysql.connect(
-                host=self.app.config['MYSQL_HOST'],
-                user=self.app.config['MYSQL_USER'],
-                password=self.app.config['MYSQL_PASSWORD'],
-                db=self.app.config['MYSQL_DB']
-            )
+            try:
+                pymysql = get_pymysql()
+                db = g._database = pymysql.connect(
+                    host=self.app.config['MYSQL_HOST'],
+                    user=self.app.config['MYSQL_USER'],
+                    password=self.app.config['MYSQL_PASSWORD'],
+                    db=self.app.config['MYSQL_DB']
+                )
+                self._connection_available = True
+            except Exception as e:
+                self._connection_available = False
+                raise Exception(f"Database connection failed. Please set up a cloud database. Error: {str(e)}")
         return db
+    
+    def is_available(self):
+        if self._connection_available is None:
+            try:
+                _ = self.connection
+                return True
+            except:
+                return False
+        return self._connection_available
 
 mysql = MySQL(app)
 
@@ -109,6 +124,47 @@ def home():
         login = True
         return render_template('home.html', username=session.get('username'), login=login)
     return render_template('home.html', login=login)
+
+@app.route('/status')
+def status():
+    db_status = "❌ Not Connected"
+    db_error = None
+    try:
+        _ = mysql.connection
+        db_status = "✅ Connected"
+    except Exception as e:
+        db_error = str(e)
+    
+    return f"""
+    <html>
+    <head>
+        <title>FitFoodie - Status</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 40px; }}
+            .status {{ padding: 20px; border-radius: 5px; margin: 10px 0; }}
+            .success {{ background: #d4edda; color: #155724; }}
+            .error {{ background: #f8d7da; color: #721c24; }}
+        </style>
+    </head>
+    <body>
+        <h1>🏥 FitFoodie Status</h1>
+        <div class="status {'success' if 'Connected' in db_status else 'error'}">
+            <h2>Database: {db_status}</h2>
+            {f'<p>{db_error}</p>' if db_error else ''}
+        </div>
+        <hr>
+        <p><strong>Environment Variables:</strong></p>
+        <ul>
+            <li>MYSQL_HOST: {app.config['MYSQL_HOST']}</li>
+            <li>MYSQL_USER: {app.config['MYSQL_USER']}</li>
+            <li>MYSQL_DB: {app.config['MYSQL_DB']}</li>
+            <li>FLASK_SECRET_KEY: {'Set' if app.secret_key != 'default_secret_key' else 'Using default'}</li>
+        </ul>
+        <p><a href="/">← Go Home</a></p>
+    </body>
+    </html>
+    """
+
 
 @app.route('/fitFoodie/login', methods=['GET', 'POST'])
 def login():
