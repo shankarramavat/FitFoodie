@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1 class="heading">Food Nutritional breakdown</h1>
+    
+
+    
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+            <div>
+                <img src="{{nutr}}" class="result" alt="Nutrients">
+            </div>
+            <p id="demo"></p>
+    
+    <script>
+        var f=false;
+    setTimeout(function myFunction() {
+      var txt;
+      
+      if (confirm("Is the food item detected correctly?")) {
+        // txt = "YES";
+        f=true;
+        window.location.href = "input";
+    } 
+    else{
+
+    }
+      document.getElementById("demo").innerHTML = txt;
+    },3000)
+    </script>
+        {% endif %}
+
+        
+        {% if not filename %}
+        <form method="POST" action="/fitFoodie/upload" enctype="multipart/form-data">
+            <input type="file" name="file" class="form-control" autocomplete="off" required>
+            <input type="submit" onclick="myFunction()"value="Submit" class="btn btn-info">
+        </form>
+        {% endif %}
+
+        
+        
+    </div>
+{% endblock %}

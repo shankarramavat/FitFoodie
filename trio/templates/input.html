@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="minput container" style="margin-left: 32%;">
+
+    <div class="inpt" style="font-size:40px; color: #27ae60; ">
+    
+        Enter the food item<input type="text" name="inp">
+    </div>
+    <form action="{{ url_for('upload_input') }}" method="post">
+        <input style=" 
+            width: 50%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #27ae60;
+            border-radius: 4px;
+          "
+            type="inp"
+            name="inp"
+            placeholder="Enter the food item"
+            id="inp"
+            class="inp"
+          />
+          <br>
+          <input type="submit" value="Submit" class="btn" />
+    </form>
+</div>
+
+{% endblock %}
+
+

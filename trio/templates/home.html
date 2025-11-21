@@ -1,0 +1,179 @@
+{% extends 'layout.html' %}
+{% block content %}
+<section class="home" id="home">
+  <div class="content">
+    <span><h1>welcome Fit Foodies</h1></span>
+    <h3>EAT BETTER, NOT LESS!! 😋</h3>
+    <p>
+      "We are what we eat!" What we eat decides everything. So start your
+      fitness journey with us today!
+    </p>
+
+    <span><h1>Try out our model</h1></span>
+    
+    <p>Upload an image of food and you will get the nutritional value on one click-></p>
+    <form action="/fitFoodie/upload" method="POST" enctype="multipart/form-data">
+      <!-- <input type="file" class="btn" name="file"></input>
+      <br> -->
+      
+      {% if login %}
+      <button type="submit" class="btn upload_img">Upload Image</button>
+      {% endif %}
+
+
+{% if not login %}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+Upload Image
+</button>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">Please Login</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Login is required for using this feature!!
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit"  class="btn btn-primary"><a style="text-decoration: none; color:white" href="{{ url_for('login') }}">Login</a></button>
+  </div>
+</div>
+</div>
+</div>
+
+
+{% endif %}
+
+    </form>
+  </div>
+
+  <div class="image">
+    <img
+      src="{{url_for('static', filename='image/home-img.png')}}"
+      alt=""
+      class="home-img"
+    />
+    <img
+      src="{{url_for('static', filename='image/home-parallax-img.png')}}"
+      alt=""
+      class="home-parallax-img"
+    />
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="image">
+    <img
+      src="{{url_for('static', filename='image/about-img.png')}}"
+      alt=""
+    />
+  </div>
+
+  <div class="content">
+    <span>why choose us?</span>
+    <h3 class="title">Simply because we make you eat healthy!</h3>
+    <p>
+      In this rapid paced world, it is not at all easy to eat right, to keep track of your food. We help you do exactly the same!
+    </p>
+    <!-- <a href="#" class="btn">read more</a> -->
+    <div class="icons-container">
+      <div class="icons">
+        <img
+          src="{{url_for('static', filename='image/greater-than-sign.png')}}"
+          alt=""
+        />
+        <h3>Scan your Dish</h3>
+      </div>
+      <div class="icons">
+        <img
+        src="{{url_for('static', filename='image/greater-than-sign.png')}}"
+          alt=""
+        />
+        <h3>Get nutritional Info</h3>
+      </div>
+      <div class="icons">
+        <img
+          src="{{url_for('static', filename='image/greater-than-sign.png')}}"
+          alt=""
+        />
+        <h3>Eat wisely</h3>
+      </div>
+      <div class="icons">
+        <img
+        src="{{url_for('static', filename='image/greater-than-sign.png')}}"
+          alt=""
+        />
+        <h3>24/7 Support</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="order" id="order">
+  <div class="heading">
+    <span>Contact Us</span>
+    <h3>Raise an issue or Share a review</h3>
+  </div>
+
+  <form action="https://formsubmit.co/23e9085ec8bb47b19455ec7d87239894 " method="POST">
+    <div class="flex">
+      <div class="inputBox">
+        <span>your name</span>
+        <input type="text" placeholder="Enter name" name="name" id="name" />
+      </div>
+    </div>
+    <div class="flex">
+      <div class="inputBox">
+        <span>your email</span>
+        <input
+          type="text"
+          placeholder="Enter email"
+          name="email"
+          id="email"
+        />
+      </div>
+    </div>
+
+    <div class="flex">
+      <div class="inputBox">
+        <span>please enter any suggestions and queries</span>
+        <textarea
+          placeholder="suggestions or queries"
+          id="message"
+          cols="30"
+          rows="10"
+        ></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="btn">Send</button>
+  </form>
+</section>
+
+<section class="footer">
+  
+
+  <div class="bottom">
+    <div class="share">
+      <a href="#" class="fab fa-facebook-f"></a>
+      <a href="#" class="fab fa-twitter"></a>
+      <a href="#" class="fab fa-instagram"></a>
+      <a href="#" class="fab fa-linkedin"></a>
+      <a href="#" class="fab fa-pinterest"></a>
+    </div>
+
+    <div class="credit">
+      All rights reserved!
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+

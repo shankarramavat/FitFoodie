@@ -1,0 +1,10 @@
+clarifai_grpc==8.8.0
+Flask==2.2.2
+pymysql==1.0.2
+
+
+Pillow==9.4.0
+requests==2.28.1
+Werkzeug==2.2.2
+wolframalpha==5.0.0
+python-dotenv

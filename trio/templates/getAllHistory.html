@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class='data'>
+        <div class='cells'>
+            <h3>Item</h3>
+        </div>
+        <div class='cells'>
+            <h3>Fats</h3>
+        </div>
+        <div class='cells'>
+            <h3>Proteins</h3>
+        </div>
+        <div class='cells'>
+            <h3>Carbohydrates</h3>
+        </div>
+        <div class='cells'>
+            <h3>Cholesterol</h3>
+        </div> 
+        <div class='cells'>
+            <h3>Sodium</h3>
+        </div>
+        <div class='cells'>
+            <h3>Time</h3>
+        </div>  
+    </div>
+    {% if data %}
+    {% for d in data %}
+    <div class='data'>
+        <div class='cells'>
+            <p>{{d['fname']}}</p>
+        </div>  
+        <div class='cells'>
+            <p>{{d['fat']}}</p>
+        </div>
+        <div class='cells'>
+            <p>{{d['protein']}}</p>
+        </div>
+        <div class='cells'>
+            <p>{{d['carbohydrates']}}</p>
+        </div>
+        <div class='cells'>
+            <p>{{d['cholesterol']}}</h3>
+        </div>
+        <div class='cells'>
+            <p>{{d['sodium']}}</h3>
+        </div>
+        <div class='cells'>
+            <p>{{d['time']}}</h3>
+        </div> 
+    </div>
+    {% endfor %}
+    {% endif %}
+{% endblock %}
+
+

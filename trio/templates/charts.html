@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="col-xs-10 col-sm-6 col-md-6 offset-2 my-5">
+  <div class="card">
+     <div class="card-body"></div>
+    
+     <form method="POST" action="/fitFoodie/report" enctype="multipart/form-data">
+        <div class="curmenu d-flex flex-row justify-content-between">
+           <div>
+              <h7>Nutrient</h7>
+              <select id="ntrlist" name="ntrlist">
+              <option value="fat">Fats</option>
+              <option value="protein">Proteins</option>
+              <option value="sodium">Sodium</option>
+              <option value="cholesterol">Cholesterol</option>
+           </select>
+           </div>
+           <!-- <div class="start_date">
+              <label for="from">Start Date:</label>
+              <input type="date" id="start" name="start">
+           </div>
+           <div class="end_date">
+              <label for="from">End Date:</label>
+              <input type="date" id="end" name="end">
+          </div> -->
+          <div class="view  offset-1">
+           <select id="duration" name="duration">
+               <option value="M">Monthly</option>
+               <option value="W">Weekly</option>
+               <option value="Y">Yearly</option>
+           </select>    
+          </div>
+        </div>
+           <input type="submit" value="Submit" class="btn btn-info">
+        
+       </form>
+        <!-- <h7>Nutrient</h7>
+        <select id="ntrlist">
+        <option value="fat">Fats</option>
+        <option value="proteins">Proteins</option>
+        <option value="sodium">Sodium</option>
+        </select> -->
+
+       <h1 class="chart-title">Daily Report</h1>
+       <hr>
+       <canvas id="myChart"></canvas>
+  </div>
+</div>
+    <script>
+      const ctx = document.getElementById('myChart');
+      let quantity = JSON.parse({{ quantity | tojson }});
+      let durations = JSON.parse({{ durations | tojson }});
+      new Chart(ctx, {
+      type: 'bar',
+      data: {
+      // labels:['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: durations,
+      datasets: [{
+      label: 'Nutrition quantity',
+      data: quantity,
+      borderWidth: 1
+      }]
+      },
+      options: {
+            scales: {
+            y: {
+               beginAtZero: true
+            }
+            }
+      }
+      });
+    </script>
+{% endblock %}
