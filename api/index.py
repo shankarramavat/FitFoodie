@@ -1,12 +1,13 @@
-import sys
 import os
+import sys
 
-# Add the trio directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'trio'))
+# Add the parent directory to sys.path so we can import from the root
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import the Flask app
-from app import app
+from index import app
 
-# Vercel expects the app instance directly
-# The app variable is automatically used as the WSGI application
-
+# Vercel expects a 'handler' function, but for Flask, 
+# simply importing 'app' is often enough if using 'vercel.json' correctly.
+# However, explicitly defining handler can help.
+# But with @vercel/python, 'app' is usually detected.
+# We will just expose 'app' as the WSGI application.
