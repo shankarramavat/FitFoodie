@@ -7,6 +7,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'trio'))
 # Import the Flask app
 from app import app
 
-# This is the handler that Vercel will use
-def handler(request, response):
-    return app(request, response)
+# Vercel expects the app instance directly
+# The app variable is automatically used as the WSGI application
+
