@@ -395,5 +395,8 @@ def getDailyReport():
     #   return render_template('charts.html', isPost=isPost)
     return render_template('charts.html')
 
+# Vercel serverless function handler
+# The app instance is automatically used by Vercel
+
 if __name__ == "__main__":
     app.run(debug=True)
