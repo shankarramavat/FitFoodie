@@ -55,12 +55,25 @@ mysql = MySQL(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
 
-# Railway provides these automatically when you add MySQL
-app.config['MYSQL_HOST'] = os.getenv('MYSQLHOST') or os.getenv('MYSQL_HOST', 'localhost')
-app.config['MYSQL_USER'] = os.getenv('MYSQLUSER') or os.getenv('MYSQL_USER', 'root')
-app.config['MYSQL_PASSWORD'] = os.getenv('MYSQLPASSWORD') or os.getenv('MYSQL_PASSWORD', 'root')
-app.config['MYSQL_DB'] = os.getenv('MYSQLDATABASE') or os.getenv('MYSQL_DB', 'geeklogin')
-app.config['MYSQL_PORT'] = int(os.getenv('MYSQLPORT') or os.getenv('MYSQL_PORT', '3306'))
+# Support for DATABASE_URL (external databases like Aiven, PlanetScale)
+database_url = os.getenv('DATABASE_URL')
+if database_url and database_url.startswith('mysql://'):
+    # Parse DATABASE_URL: mysql://user:pass@host:port/dbname
+    import re
+    match = re.match(r'mysql://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', database_url)
+    if match:
+        app.config['MYSQL_USER'] = match.group(1)
+        app.config['MYSQL_PASSWORD'] = match.group(2)
+        app.config['MYSQL_HOST'] = match.group(3)
+        app.config['MYSQL_PORT'] = int(match.group(4))
+        app.config['MYSQL_DB'] = match.group(5)
+else:
+    # Railway provides these automatically when you add MySQL
+    app.config['MYSQL_HOST'] = os.getenv('MYSQLHOST') or os.getenv('MYSQL_HOST', 'localhost')
+    app.config['MYSQL_USER'] = os.getenv('MYSQLUSER') or os.getenv('MYSQL_USER', 'root')
+    app.config['MYSQL_PASSWORD'] = os.getenv('MYSQLPASSWORD') or os.getenv('MYSQL_PASSWORD', 'root')
+    app.config['MYSQL_DB'] = os.getenv('MYSQLDATABASE') or os.getenv('MYSQL_DB', 'geeklogin')
+    app.config['MYSQL_PORT'] = int(os.getenv('MYSQLPORT') or os.getenv('MYSQL_PORT', '3306'))
 
 
 
