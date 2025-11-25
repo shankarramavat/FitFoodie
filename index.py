@@ -1,38 +1,70 @@
 import sys
 import os
-import traceback
 
-# Add the trio directory to the path so we can import app.py
+# Add the trio directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'trio'))
 
-try:
-    # Import the main Flask app from trio/app.py
-    from app import app as application
+# Create a simple Flask app to test
+from flask import Flask
 
-    # -------------------------------------------------
-    # INJECT HARDCODED DATABASE CREDENTIALS
-    # -------------------------------------------------
-    # This forces the app to use the correct Railway DB, ignoring missing env vars
-    application.config['MYSQL_HOST'] = 'interchange.proxy.rlwy.net'
-    application.config['MYSQL_USER'] = 'root'
-    application.config['MYSQL_PASSWORD'] = 'EmoLxiyvQALpwpAwrniXpYeJhpIhjavo'
-    application.config['MYSQL_DB'] = 'railway'
-    application.config['MYSQL_PORT'] = 48465
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return """
+    <h1>FitFoodie - Deployment Test</h1>
+    <p>If you see this, the basic Flask app is working!</p>
+    <p>Now testing imports...</p>
+    """
+
+@app.route('/test-imports')
+def test_imports():
+    results = []
     
-    # Ensure secret key is set
-    application.secret_key = os.getenv('FLASK_SECRET_KEY', 'fixed_secret_key_for_vercel')
+    # Test each import individually
+    try:
+        import pymysql
+        results.append("✓ pymysql imported successfully")
+    except Exception as e:
+        results.append(f"✗ pymysql failed: {str(e)}")
+    
+    try:
+        from PIL import Image
+        results.append("✓ Pillow imported successfully")
+    except Exception as e:
+        results.append(f"✗ Pillow failed: {str(e)}")
+    
+    try:
+        import requests
+        results.append("✓ requests imported successfully")
+    except Exception as e:
+        results.append(f"✗ requests failed: {str(e)}")
+    
+    try:
+        import wolframalpha
+        results.append("✓ wolframalpha imported successfully")
+    except Exception as e:
+        results.append(f"✗ wolframalpha failed: {str(e)}")
+    
+    try:
+        from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
+        results.append("✓ clarifai_grpc imported successfully")
+    except Exception as e:
+        results.append(f"✗ clarifai_grpc failed: {str(e)}")
+    
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'trio'))
+        from app import app as main_app
+        results.append("✓ Main app imported successfully")
+    except Exception as e:
+        results.append(f"✗ Main app import failed: {str(e)}")
+    
+    html = "<h1>Import Test Results</h1><ul>"
+    for result in results:
+        html += f"<li>{result}</li>"
+    html += "</ul>"
+    
+    return html
 
-    # Vercel expects 'app' or 'handler'
-    app = application
-    handler = application
-
-except Exception as e:
-    # Catch any import errors (like missing dependencies) and show them
-    error_details = traceback.format_exc()
-    from flask import Flask
-    app = Flask(__name__)
-    @app.route('/')
-    @app.route('/<path:path>')
-    def catch_all(path=''):
-        return f"<h1>Critical Startup Error</h1><pre>{error_details}</pre>", 500
-    handler = app
+# Vercel needs this
+handler = app
