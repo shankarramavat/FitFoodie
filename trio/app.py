@@ -63,7 +63,46 @@ app.config['MYSQL_DB'] = os.getenv('MYSQLDATABASE') or os.getenv('MYSQL_DB', 'ge
 app.config['MYSQL_PORT'] = int(os.getenv('MYSQLPORT') or os.getenv('MYSQL_PORT', '3306'))
 
 
+
+# Database setup route - visit this ONCE to create tables
+@app.route('/setup-database')
+def setup_database():
+    try:
+        cursor = mysql.connection.cursor(pymysql.cursors.DictCursor)
+        
+        # Create accounts table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS accounts (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(100) NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                email VARCHAR(100) NOT NULL
+            )
+        """)
+        
+        # Create nutrients table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS nutrients (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                fname VARCHAR(255),
+                u_id INT,
+                fat FLOAT,
+                carbohydrates FLOAT,
+                cholesterol FLOAT,
+                protein FLOAT,
+                sodium FLOAT,
+                time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        
+        mysql.connection.commit()
+        cursor.close()
+        return "<h1>✅ Database tables created successfully!</h1><p>You can now <a href='/fitFoodie/register'>register</a> or <a href='/fitFoodie/login'>login</a></p>"
+    except Exception as e:
+        return f"<h1>❌ Error creating tables:</h1><pre>{str(e)}</pre>", 500
+
 # @app.route('/')
+
 @app.route('/fitFoodie/login', methods =['GET', 'POST'])
 def login():
     msg = ''
