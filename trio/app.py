@@ -101,6 +101,29 @@ def setup_database():
     except Exception as e:
         return f"<h1>❌ Error creating tables:</h1><pre>{str(e)}</pre>", 500
 
+# Debug route to check environment variables
+@app.route('/debug-env')
+def debug_env():
+    env_vars = {
+        'MYSQLHOST': os.getenv('MYSQLHOST', 'NOT SET'),
+        'MYSQLUSER': os.getenv('MYSQLUSER', 'NOT SET'),
+        'MYSQLPASSWORD': '***' if os.getenv('MYSQLPASSWORD') else 'NOT SET',
+        'MYSQLDATABASE': os.getenv('MYSQLDATABASE', 'NOT SET'),
+        'MYSQLPORT': os.getenv('MYSQLPORT', 'NOT SET'),
+        'MYSQL_HOST': os.getenv('MYSQL_HOST', 'NOT SET'),
+        'MYSQL_USER': os.getenv('MYSQL_USER', 'NOT SET'),
+        'MYSQL_PASSWORD': '***' if os.getenv('MYSQL_PASSWORD') else 'NOT SET',
+        'MYSQL_DB': os.getenv('MYSQL_DB', 'NOT SET'),
+        'MYSQL_PORT': os.getenv('MYSQL_PORT', 'NOT SET'),
+        'Config MYSQL_HOST': app.config.get('MYSQL_HOST', 'NOT SET'),
+        'Config MYSQL_PORT': app.config.get('MYSQL_PORT', 'NOT SET'),
+    }
+    html = "<h1>Environment Variables Debug</h1><ul>"
+    for key, value in env_vars.items():
+        html += f"<li><strong>{key}:</strong> {value}</li>"
+    html += "</ul>"
+    return html
+
 # @app.route('/')
 
 @app.route('/fitFoodie/login', methods =['GET', 'POST'])
