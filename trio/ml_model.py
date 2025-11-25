@@ -11,10 +11,6 @@ from clarifai_grpc.grpc.api.status import status_pb2, status_code_pb2
 channel = ClarifaiChannel.get_grpc_channel()
 stub = service_pb2_grpc.V2Stub(channel)
 
-# Use env var for key (set CLARIFAI_API_KEY in your environment)
-CLARIFAI_KEY = os.getenv("CLARIFAI_API_KEY")
-metadata = (("authorization", "Key " + CLARIFAI_KEY),)
-
 userDataObject = resources_pb2.UserAppIDSet(user_id="clarifai", app_id="main")
 
 
@@ -26,6 +22,14 @@ def food_identifier(image_data):
     """
     # Use bytes directly
     file_bytes = image_data
+
+    # Use env var for key (set CLARIFAI_API_KEY in your environment)
+    CLARIFAI_KEY = os.getenv("CLARIFAI_API_KEY")
+    if not CLARIFAI_KEY:
+        print("Error: CLARIFAI_API_KEY not found in environment variables.")
+        return "Unknown"
+        
+    metadata = (("authorization", "Key " + CLARIFAI_KEY),)
 
     try:
         post_model_outputs_response = stub.PostModelOutputs(
