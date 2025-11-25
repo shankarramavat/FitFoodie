@@ -45,7 +45,8 @@ class MySQL:
                 host=self.app.config['MYSQL_HOST'],
                 user=self.app.config['MYSQL_USER'],
                 password=self.app.config['MYSQL_PASSWORD'],
-                db=self.app.config['MYSQL_DB']
+                db=self.app.config['MYSQL_DB'],
+                port=self.app.config.get('MYSQL_PORT', 3306)
             )
         return db
 
@@ -54,10 +55,12 @@ mysql = MySQL(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
 
-app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'localhost')
-app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'root')
-app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD', 'root')
-app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'geeklogin')
+# Railway provides these automatically when you add MySQL
+app.config['MYSQL_HOST'] = os.getenv('MYSQLHOST') or os.getenv('MYSQL_HOST', 'localhost')
+app.config['MYSQL_USER'] = os.getenv('MYSQLUSER') or os.getenv('MYSQL_USER', 'root')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQLPASSWORD') or os.getenv('MYSQL_PASSWORD', 'root')
+app.config['MYSQL_DB'] = os.getenv('MYSQLDATABASE') or os.getenv('MYSQL_DB', 'geeklogin')
+app.config['MYSQL_PORT'] = int(os.getenv('MYSQLPORT') or os.getenv('MYSQL_PORT', '3306'))
 
 
 # @app.route('/')
